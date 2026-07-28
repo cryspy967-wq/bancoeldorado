@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco El Dorado — Banca en Línea</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --gold-primary: #d4af37;
+      --gold-hover: #f3cf55;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+    header { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 36px; height: 36px; background: linear-gradient(135deg, var(--gold-primary), #8a7322); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 1.2rem; }
+    .brand h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main); }
+    .brand h1 span { color: var(--gold-primary); font-weight: 300; }
+
+    .user-profile { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--text-muted); }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #1e293b; border: 1px solid var(--gold-primary); display: flex; align-items: center; justify-content: center; color: var(--gold-primary); font-weight: bold; }
+
+    main { max-width: 1200px; width: 100%; margin: 30px auto; padding: 0 20px; flex: 1; }
+
+    .login-container { max-width: 420px; margin: 60px auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
+    .login-container h2 { font-size: 1.5rem; margin-bottom: 8px; color: var(--text-main); }
+    .login-container p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 25px; }
+
+    .form-group { text-align: left; margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
+    input, select { width: 100%; background: #080c14; border: 1px solid var(--card-border); color: var(--text-main); padding: 12px 14px; border-radius: 8px; outline: none; font-size: 0.95rem; }
+    input:focus, select:focus { border-color: var(--gold-primary); }
+
+    .btn-gold { background: linear-gradient(135deg, var(--gold-primary), #b39023); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%; font-size: 0.95rem; }
+    .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .dashboard { display: none; }
+    .dashboard.active { display: block; }
+
+    .client-grid { display: grid; grid-template-columns: 1fr 340px; gap: 25px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
+
+    .balance-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid rgba(212, 175, 55, 0.3); position: relative; overflow: hidden; }
+    .balance-amount { font-size: 2.5rem; font-weight: 700; color: var(--text-main); margin: 10px 0 5px 0; }
+    .account-number { font-family: monospace; color: var(--gold-primary); letter-spacing: 1px; font-size: 0.95rem; }
+
+    .bank-card { background: linear-gradient(135deg, #2a2a2a, #111111); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 22px; height: 190px; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+    .bank-card .chip { width: 42px; height: 32px; background: linear-gradient(135deg, #e0c368, #8a7322); border-radius: 6px; }
+    .bank-card .card-num { font-family: monospace; font-size: 1.15rem; letter-spacing: 2px; color: #fff; }
+    .bank-card .card-footer { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--card-border); font-size: 0.9rem; }
+    th { color: var(--text-muted); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+
+    footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); font-size: 0.8rem; color: var(--text-muted); margin-top: auto; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">D</div>
+      <h1>BANCO <span>EL DORADO</span></h1>
+    </div>
+    <div class="user-profile" id="user-header-info" style="display: none;">
+      <span id="user-name-display">Cliente</span>
+      <div class="user-avatar" id="user-avatar-initial">C</div>
+      <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer; margin-left:10px;"><i data-lucide="log-out" style="width:18px;"></i></button>
+    </div>
+  </header>
+
+  <main>
+    <div id="login-section" class="login-container">
+      <h2>Banca en Línea</h2>
+      <p>Ingrese sus credenciales de acceso cliente</p>
+      <form onsubmit="iniciarSesionCliente(event)">
+        <div class="form-group">
+          <label>Número de Documento / Cédula</label>
+          <input type="text" id="login-doc" placeholder="Ej: V-12345678" required>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="login-pass" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-gold">Iniciar Sesión</button>
+      </form>
+    </div>
+
+    <div id="dashboard-section" class="dashboard">
+      <div class="client-grid">
+        <div>
+          <div class="card balance-card">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Saldo Total Disponible</span>
+            <div class="balance-amount" id="client-balance">$0.00</div>
+            <div class="account-number" id="client-iban">IBAN: Carga pendiente...</div>
+            <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);">Tipo: <span id="client-account-type" style="color:#fff; font-weight:600;">Platinum</span></div>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 15px;">Transferencia Inmediata</h3>
+            <form onsubmit="ejecutarTransferencia(event)">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div>
+                  <label>Cuenta Destino (IBAN)</label>
+                  <input type="text" id="trans-iban" placeholder="SV98-DORA-XXXX-XXXX" required>
+                </div>
+                <div>
+                  <label>Monto USD ($)</label>
+                  <input type="number" step="0.01" id="trans-monto" placeholder="0.00" required>
+                </div>
+              </div>
+              <div style="margin-bottom: 15px;">
+                <label>Concepto / Referencia</label>
+                <input type="text" placeholder="Ej: Transferencia personal">
+              </div>
+              <button type="submit" class="btn-gold">Enviar Transferencia</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Movimientos Recientes</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Descripción</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Monto</th>
+                </tr>
+              </thead>
+              <tbody id="client-transactions">
+                <tr>
+                  <td>Depósito Inicial Asignado</td>
+                  <td>Reciente</td>
+                  <td><span style="color: var(--success);">Completado</span></td>
+                  <td style="color: var(--success); font-weight: bold;" id="initial-deposit-row">+$0.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h3 style="font-size: 1rem; margin-bottom: 15px; color: var(--text-muted);">Tarjeta Asignada</h3>
+            <div class="bank-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: bold; font-size: 0.8rem; color: var(--gold-primary);" id="card-type-display">EL DORADO BLACK</span>
+                <i data-lucide="wifi" style="color: #fff; width: 18px;"></i>
+              </div>
+              <div class="chip"></div>
+              <div class="card-num" id="card-num-display">•••• •••• •••• 8821</div>
+              <div class="card-footer">
+                <span id="card-holder-display">TITULAR</span>
+                <span>EXP: 12/29</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 Banco El Dorado S.A. Portal Oficial de Clientes.
+  </footer>
+
+  <script>
+    lucide.createIcons();
+    let clienteActual = null;
+
+    function obtenerBaseDatos() {
+      return JSON.parse(localStorage.getItem('eldorado_db')) || [
+        {
+          doc: "V-12345678",
+          nombre: "Carlos Mendoza",
+          tipo: "Banca Privada VIP",
+          iban: "SV98-DORA-0001-9982-3401",
+          saldo: 128450.00,
+          tarjeta: "Visa El Dorado Signature",
+          tarjetaNum: "4532 •••• •••• 8821"
+        }
+      ];
+    }
+
+    function guardarBaseDatos(db) {
+      localStorage.setItem('eldorado_db', JSON.stringify(db));
+    }
+
+    function iniciarSesionCliente(e) {
+      e.preventDefault();
+      const doc = document.getElementById('login-doc').value.trim();
+      const db = obtenerBaseDatos();
+      const usuario = db.find(u => u.doc.toLowerCase() === doc.toLowerCase());
+
+      if (usuario) {
+        clienteActual = usuario;
+        cargarDashboard();
+      } else {
+        alert("Cliente no registrado en Banco El Dorado. Consulte con su ejecutivo.");
+      }
+    }
+
+    function cargarDashboard() {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('dashboard-section').classList.add('active');
+      document.getElementById('user-header-info').style.display = 'flex';
+
+      document.getElementById('user-name-display').innerText = clienteActual.nombre;
+      document.getElementById('user-avatar-initial').innerText = clienteActual.nombre.charAt(0);
+      document.getElementById('client-balance').innerText = '$' + parseFloat(clienteActual.saldo).toLocaleString('en-US', {minimumFractionDigits: 2});
+      document.getElementById('client-iban').innerText = 'IBAN: ' + clienteActual.iban;
+      document.getElementById('client-account-type').innerText = clienteActual.tipo;
+      document.getElementById('initial-deposit-row').innerText = '+$' + parseFloat(clienteActual.saldo).toLocaleString('en-US', {minimumFractionDigits: 2});
+
+      document.getElementById('card-holder-display').innerText = clienteActual.nombre.toUpperCase();
+      document.getElementById('card-type-display').innerText = clienteActual.tarjeta.toUpperCase();
+      document.getElementById('card-num-display').innerText = clienteActual.tarjetaNum || '4532 •••• •••• 9900';
+    }
+
+    function ejecutarTransferencia(e) {
+      e.preventDefault();
+      const monto = parseFloat(document.getElementById('trans-monto').value);
+      if (monto > clienteActual.saldo) {
+        alert("Saldo insuficiente para realizar esta transferencia.");
+        return;
+      }
+
+      clienteActual.saldo -= monto;
+      const db = obtenerBaseDatos();
+      const idx = db.findIndex(u => u.doc === clienteActual.doc);
+      if (idx !== -1) {
+        db[idx].saldo = clienteActual.saldo;
+        guardarBaseDatos(db);
+      }
+
+      cargarDashboard();
+      alert("Transferencia enviada con éxito.");
+      e.target.reset();
+    }
+
+    function logout() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
