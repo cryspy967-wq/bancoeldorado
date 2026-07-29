@@ -29,10 +29,6 @@
     .brand-text { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
     .brand-text span { color: var(--gold-primary); font-weight: 300; }
 
-    nav ul { display: flex; list-style: none; gap: 25px; }
-    nav a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
-    nav a:hover { color: var(--gold-primary); }
-
     .btn-outline { border: 1px solid var(--gold-primary); color: var(--gold-primary); padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; background: transparent; cursor: pointer; }
     .btn-gold { background: var(--gold-gradient); color: #000; padding: 9px 20px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
 
@@ -41,15 +37,29 @@
     .hero-text h1 span { background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero-text p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; }
 
+    /* MODAL WIZARD / PASOS */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px; }
     .modal-overlay.active { display: flex; }
-    .modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 35px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 35px; width: 100%; max-width: 600px; position: relative; max-height: 90vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-muted); cursor: pointer; }
+
+    /* PROGRESS BAR */
+    .wizard-steps { display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+    .step-dot { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .step-dot.active { color: var(--gold-primary); }
+
+    .step-content { display: none; }
+    .step-content.active { display: block; }
 
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
     input, select { width: 100%; background: #080c14; border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 14px; border-radius: 8px; outline: none; font-size: 0.95rem; }
-    input[type="file"] { padding: 8px; background: #111827; cursor: pointer; }
+    
+    .radio-group { display: flex; gap: 20px; margin-top: 5px; }
+    .radio-option { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #fff; cursor: pointer; }
+    .radio-option input { width: auto; }
+
+    .file-preview { margin-top: 8px; font-size: 0.8rem; color: var(--gold-primary); }
 
     .dashboard-container { display: none; max-width: 1200px; margin: 30px auto; padding: 0 5%; }
     .dashboard-container.active { display: block; }
@@ -82,10 +92,10 @@
   <div id="public-view">
     <section class="hero">
       <div class="hero-text">
-        <h1>Banca Digital de <span>Alta Gama</span></h1>
-        <p>Abre tu cuenta bancaria en línea. Completa tu solicitud, adjunta tus documentos de identidad y nuestro departamento de cumplimiento evaluará tu apertura.</p>
+        <h1>Banca Privada de <span>Nivel Internacional</span></h1>
+        <p>Inicie su proceso de vinculación digital cumpliendo con la normativa de verificación KYC y regulación bancaria 2026.</p>
         <div style="display: flex; gap: 15px;">
-          <button class="btn-gold" onclick="openModal('register-modal')">Solicitar Apertura</button>
+          <button class="btn-gold" onclick="openModal('register-modal')">Solicitar Apertura Online</button>
           <button class="btn-outline" onclick="openModal('login-modal')">Acceso Cliente</button>
         </div>
       </div>
@@ -106,33 +116,32 @@
           <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">Tipo de Cuenta: <span id="dash-account-type" style="color:#fff;">-</span></div>
         </div>
 
-        <!-- FORMULARIO DE TRANSFERENCIAS REALES CON BANCOS -->
         <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; margin-top: 25px;">
-          <h3 style="margin-bottom: 20px;"><i data-lucide="send" style="color: var(--gold-primary);"></i> Realizar Transferencia Bancaria</h3>
+          <h3 style="margin-bottom: 20px;"><i data-lucide="send" style="color: var(--gold-primary);"></i> Transferencia Bancaria Interbancaria</h3>
           <form onsubmit="hacerTransferencia(event)">
             <div class="form-group">
-              <label>Seleccione el Banco Destino</label>
+              <label>Banco Destino</label>
               <select id="trans-bank" required>
                 <option value="Banco El Dorado">Banco El Dorado (Interno)</option>
                 <option value="Banesco">Banesco Banco Universal</option>
                 <option value="Mercantil Banco">Mercantil Banco</option>
                 <option value="Bank of America">Bank of America</option>
-                <option value="Chase Bank">JPMorgan Chase Bank</option>
+                <option value="JPMorgan Chase">JPMorgan Chase</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Número de Cuenta / IBAN Destino</label>
-              <input type="text" id="trans-dest" placeholder="Ej: SV98-DORA-XXXX-XXXX" required>
+              <label>Número de Cuenta / IBAN</label>
+              <input type="text" id="trans-dest" placeholder="SV98-DORA-XXXX-XXXX" required>
             </div>
             <div class="form-group">
-              <label>Nombre del Beneficiario</label>
-              <input type="text" id="trans-name" placeholder="Nombre completo del titular" required>
+              <label>Titular Beneficiario</label>
+              <input type="text" id="trans-name" placeholder="Nombre completo" required>
             </div>
             <div class="form-group">
-              <label>Monto a Transferir ($ USD)</label>
+              <label>Monto a enviar ($ USD)</label>
               <input type="number" step="0.01" id="trans-amount" placeholder="0.00" min="1" required>
             </div>
-            <button type="submit" class="btn-gold" style="width: 100%;">Procesar Transferencia</button>
+            <button type="submit" class="btn-gold" style="width: 100%;">Transferir Fondos</button>
           </form>
         </div>
       </div>
@@ -140,7 +149,7 @@
       <div>
         <div class="credit-card">
           <div style="display: flex; justify-content: space-between;">
-            <span style="font-weight: bold; color: var(--gold-primary);" id="dash-card-brand">EL DORADO GOLD</span>
+            <span style="font-weight: bold; color: var(--gold-primary);" id="dash-card-brand">EL DORADO VIP</span>
             <i data-lucide="wifi" style="color: #fff;"></i>
           </div>
           <div class="card-chip"></div>
@@ -154,46 +163,136 @@
     </div>
   </div>
 
-  <!-- MODAL SOLICITUD DE REGISTRO CON DOCUMENTOS -->
+  <!-- MODAL SOLICITUD WIZARD POR PASOS (DIAPOSITIVAS) -->
   <div class="modal-overlay" id="register-modal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeModal('register-modal')"><i data-lucide="x"></i></button>
-      <h2>Solicitud de Apertura de Cuenta</h2>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Suba sus documentos para que el departamento de aprobación procese su solicitud.</p>
       
-      <form onsubmit="solicitarApertura(event)">
-        <div class="form-group">
-          <label>Nombre y Apellido</label>
-          <input type="text" id="reg-name" required>
+      <!-- INDICADOR DE PASOS -->
+      <div class="wizard-steps">
+        <div class="step-dot active" id="dot-1">1. Personales</div>
+        <div class="step-dot" id="dot-2">2. Cumplimiento / PEP</div>
+        <div class="step-dot" id="dot-3">3. Documentos</div>
+        <div class="step-dot" id="dot-4">4. Acceso</div>
+      </div>
+
+      <form id="wizard-form" onsubmit="finalizarSolicitud(event)">
+        
+        <!-- PASO 1: DATOS PERSONALES -->
+        <div class="step-content active" id="step-1">
+          <h3 style="margin-bottom: 15px;">Paso 1: Datos Identificativos</h3>
+          <div class="form-group">
+            <label>Nombres y Apellidos Completos</label>
+            <input type="text" id="reg-name" required placeholder="Ej: Pedro José Pérez">
+          </div>
+          <div class="form-group">
+            <label>Cédula de Identidad / Pasaporte</label>
+            <input type="text" id="reg-doc" required placeholder="Ej: V-18293044">
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="reg-email" required placeholder="correo@ejemplo.com">
+          </div>
+          <div class="form-group">
+            <label>Teléfono de Contacto</label>
+            <input type="tel" id="reg-phone" required placeholder="+58 412 0000000">
+          </div>
+          <button type="button" class="btn-gold" style="width:100%; margin-top:10px;" onclick="nextStep(2)">Siguiente: Perfil Financiero y PEP →</button>
         </div>
-        <div class="form-group">
-          <label>Documento de Identidad / Cédula</label>
-          <input type="text" id="reg-doc" required>
+
+        <!-- PASO 2: CUMPLIMIENTO REGULATORIO Y POLITICA (PEP) -->
+        <div class="step-content" id="step-2">
+          <h3 style="margin-bottom: 15px;">Paso 2: Declaración Jurada y Actividad</h3>
+          
+          <div class="form-group">
+            <label>Origen Principal de sus Fondos</label>
+            <select id="reg-income-source">
+              <option value="Sueldo / Salario Libre":>Sueldo / Salario en Dependencia</option>
+              <option value="Actividad Comercial / Negocio">Actividad Comercial / Negocio Propio</option>
+              <option value="Inversiones / Rendimientos">Inversiones / Rendimientos</option>
+              <option value="Ahorros / Herencia">Ahorros / Herencia</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Estimado de Movimiento Mensual ($ USD)</label>
+            <input type="number" id="reg-deposit" required placeholder="Ej: 1500.00">
+          </div>
+
+          <div style="background:#080c14; border:1px solid var(--border-color); padding:15px; border-radius:10px; margin-bottom:15px;">
+            <label style="color:#fff; font-size:0.88rem; font-weight:600; display:block; margin-bottom:8px;">
+              ¿Es usted una Persona Expuesta Políticamente (PEP)?
+            </label>
+            <p style="color:var(--text-muted); font-size:0.78rem; margin-bottom:10px;">(Cargos públicos, gubernamentales, militares o alta gerencia pública)</p>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="pep" value="No" checked> No</label>
+              <label class="radio-option"><input type="radio" name="pep" value="Sí"> Sí, soy PEP</label>
+            </div>
+          </div>
+
+          <div style="background:#080c14; border:1px solid var(--border-color); padding:15px; border-radius:10px; margin-bottom:15px;">
+            <label style="color:#fff; font-size:0.88rem; font-weight:600; display:block; margin-bottom:8px;">
+              ¿Tiene familiares hasta 2° grado de consanguinidad PEP?
+            </label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="pep_fam" value="No" checked> No</label>
+              <label class="radio-option"><input type="radio" name="pep_fam" value="Sí"> Sí</label>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn-outline" style="width:50%;" onclick="nextStep(1)">← Atrás</button>
+            <button type="button" class="btn-gold" style="width:50%;" onclick="nextStep(3)">Siguiente: Documentos →</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Tipo de Cuenta</label>
-          <select id="reg-type">
-            <option value="Cuenta Corriente Platinum">Cuenta Corriente Platinum</option>
-            <option value="Banca Privada VIP">Banca Privada VIP</option>
-          </select>
+
+        <!-- PASO 3: CARGA DE DOCUMENTOS CON VISTA PREVIA -->
+        <div class="step-content" id="step-3">
+          <h3 style="margin-bottom: 15px;">Paso 3: Expediente Digital (KYC)</h3>
+          
+          <div class="form-group">
+            <label>Cédula de Identidad o Pasaporte (Foto legible)</label>
+            <input type="file" id="file-id" accept="image/*" onchange="previewFile(this, 'preview-id-img')" required>
+            <div id="preview-id-img" class="file-preview"></div>
+          </div>
+
+          <div class="form-group">
+            <label>RIF / Comprobante de Domicilio o Servicio</label>
+            <input type="file" id="file-rif" accept="image/*" onchange="previewFile(this, 'preview-rif-img')" required>
+            <div id="preview-rif-img" class="file-preview"></div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:20px;">
+            <button type="button" class="btn-outline" style="width:50%;" onclick="nextStep(2)">← Atrás</button>
+            <button type="button" class="btn-gold" style="width:50%;" onclick="nextStep(4)">Siguiente: Seguridades →</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Depósito Inicial Estimado ($ USD)</label>
-          <input type="number" step="0.01" id="reg-deposit" required>
+
+        <!-- PASO 4: CREACIÓN DE CLAVE Y FINALIZACION -->
+        <div class="step-content" id="step-4">
+          <h3 style="margin-bottom: 15px;">Paso 4: Credenciales de Acceso</h3>
+          <div class="form-group">
+            <label>Tipo de Cuenta a Aperturar</label>
+            <select id="reg-type">
+              <option value="Cuenta Platinum USD">Cuenta Platinum USD</option>
+              <option value="Banca Privada VIP">Banca Privada VIP</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cree su Contraseña de Ingreso</label>
+            <input type="password" id="reg-pass" required placeholder="••••••••">
+          </div>
+
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">
+            Al enviar esta solicitud, certifique bajo fe de juramento que la información y documentos suministrados son legítimos y verificables.
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn-outline" style="width:50%;" onclick="nextStep(3)">← Atrás</button>
+            <button type="submit" class="btn-gold" style="width:50%;">Enviar a Evaluación</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Cargar Cédula / Documento de Identidad (Imagen/PDF)</label>
-          <input type="file" id="reg-file-id" accept="image/*,.pdf" required>
-        </div>
-        <div class="form-group">
-          <label>Cargar RIF / Comprobante de Domicilio (Imagen/PDF)</label>
-          <input type="file" id="reg-file-rif" accept="image/*,.pdf" required>
-        </div>
-        <div class="form-group">
-          <label>Contraseña de Acceso</label>
-          <input type="password" id="reg-pass" required>
-        </div>
-        <button type="submit" class="btn-gold" style="width: 100%;">Enviar Solicitud a Revisión</button>
+
       </form>
     </div>
   </div>
@@ -224,54 +323,67 @@
   <script>
     lucide.createIcons();
     let currentClient = null;
+    let base64Id = "";
+    let base64Rif = "";
 
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    function getPendingRequests() {
-      return JSON.parse(localStorage.getItem('eldorado_requests')) || [];
+    function nextStep(step) {
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.step-dot').forEach(el => el.classList.remove('active'));
+
+      document.getElementById('step-' + step).classList.add('active');
+      document.getElementById('dot-' + step).classList.add('active');
     }
 
-    function savePendingRequests(reqs) {
-      localStorage.setItem('eldorado_requests', JSON.stringify(reqs));
+    function previewFile(input, targetId) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (targetId === 'preview-id-img') base64Id = e.target.result;
+          if (targetId === 'preview-rif-img') base64Rif = e.target.result;
+          document.getElementById(targetId).innerText = "✓ Documento cargado: " + file.name;
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
-    function getDB() {
-      return JSON.parse(localStorage.getItem('eldorado_db')) || [];
-    }
+    function getPendingRequests() { return JSON.parse(localStorage.getItem('eldorado_requests')) || []; }
+    function savePendingRequests(reqs) { localStorage.setItem('eldorado_requests', JSON.stringify(reqs)); }
+    function getDB() { return JSON.parse(localStorage.getItem('eldorado_db')) || []; }
+    function saveDB(db) { localStorage.setItem('eldorado_db', JSON.stringify(db)); }
 
-    function saveDB(db) {
-      localStorage.setItem('eldorado_db', JSON.stringify(db));
-    }
-
-    function solicitarApertura(e) {
+    function finalizarSolicitud(e) {
       e.preventDefault();
       const doc = document.getElementById('reg-doc').value.trim();
       const name = document.getElementById('reg-name').value.trim();
-      const type = document.getElementById('reg-type').value;
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const income = document.getElementById('reg-income-source').value;
       const deposit = parseFloat(document.getElementById('reg-deposit').value);
+      const pep = document.querySelector('input[name="pep"]:checked').value;
+      const pepFam = document.querySelector('input[name="pep_fam"]:checked').value;
+      const type = document.getElementById('reg-type').value;
       const pass = document.getElementById('reg-pass').value;
 
-      const fileId = document.getElementById('reg-file-id').files[0]?.name || 'cedula_adjunta.png';
-      const fileRif = document.getElementById('reg-file-rif').files[0]?.name || 'rif_adjunto.pdf';
-
       const reqs = getPendingRequests();
-      
       if (reqs.some(r => r.doc === doc) || getDB().some(u => u.doc === doc)) {
         alert("Ya existe una solicitud o cuenta activa registrada con este documento.");
         return;
       }
 
       reqs.push({
-        doc, name, type, deposit, pass,
-        docIdName: fileId,
-        docRifName: fileRif,
+        doc, name, email, phone, income, deposit, pep, pepFam, type, pass,
+        docIdImg: base64Id || "https://via.placeholder.com/400x250?text=Cedula+No+Cargada",
+        docRifImg: base64Rif || "https://via.placeholder.com/400x250?text=RIF+No+Cargado",
         fecha: new Date().toLocaleDateString()
       });
 
       savePendingRequests(reqs);
       closeModal('register-modal');
-      alert("¡Solicitud enviada exitosamente!\n\nUn analista de Banco El Dorado revisará sus documentos adjuntos. Intente iniciar sesión una vez aprobada su cuenta.");
+      alert("¡Solicitud de vinculación enviada exitosamente!\n\nEl departamento de cumplimiento evaluará su perfil PEP y documentos adjuntos.");
     }
 
     function iniciarSesion(e) {
@@ -280,10 +392,8 @@
       const pass = document.getElementById('login-pass').value.trim();
 
       const reqs = getPendingRequests();
-      const isPending = reqs.find(r => r.doc.toLowerCase() === doc.toLowerCase());
-
-      if (isPending) {
-        alert("SU CUENTA ESTÁ EN REVISIÓN.\n\nSus documentos aún están siendo analizados por el departamento de aprobación de Banco El Dorado.");
+      if (reqs.find(r => r.doc.toLowerCase() === doc.toLowerCase())) {
+        alert("SOLICITUD EN REVISIÓN CUMPLIMIENTO.\n\nSus documentos e historial PEP aún están siendo evaluados por los empleados del banco.");
         return;
       }
 
@@ -295,7 +405,7 @@
         closeModal('login-modal');
         renderDashboard();
       } else {
-        alert("Documento o contraseña incorrectos (o su solicitud aún no ha sido aprobada).");
+        alert("Credenciales incorrectas o expediente no aprobado.");
       }
     }
 
@@ -323,19 +433,15 @@
       const amount = parseFloat(document.getElementById('trans-amount').value);
 
       if (amount > currentClient.saldo) {
-        alert("Saldo insuficiente para completar la transacción.");
+        alert("Saldo insuficiente.");
         return;
       }
 
       currentClient.saldo -= amount;
       const db = getDB();
-      
-      // Si la transferencia es para el mismo Banco El Dorado, le suma el saldo al otro usuario si existe
       if (bank === "Banco El Dorado") {
         const destUser = db.find(u => u.iban === dest || u.doc === dest);
-        if (destUser) {
-          destUser.saldo = parseFloat(destUser.saldo) + amount;
-        }
+        if (destUser) destUser.saldo = parseFloat(destUser.saldo) + amount;
       }
 
       const idx = db.findIndex(u => u.doc === currentClient.doc);
@@ -345,7 +451,7 @@
       }
 
       renderDashboard();
-      alert(`Transferencia exitosa por $${amount.toFixed(2)} hacia ${name} en ${bank}.`);
+      alert(`Transferencia exitosa por $${amount.toFixed(2)} enviada a ${name} en ${bank}.`);
       e.target.reset();
     }
 
